@@ -62,16 +62,19 @@ export function parse(hand: string): Tile[] {
       tiles.push(`${parseInt(s[i], 10)}${s[s.length - 1]}` as Tile)
     }
   }
-
-  if (tiles.length !== 14) {
-    throw new Error("Invalid hand")
-  }
-
-  return tiles
+  return sortTiles(tiles)
 }
 
 export function isHonor(tile: Tile): boolean {
   return tile[1] === "w"
+}
+
+export function isTerminal(tile: Tile): boolean {
+  if (isHonor(tile)) {
+    return false
+  }
+  const num = getNumber(tile)
+  return num === 1 || num === 9
 }
 
 export function getKind(tile: Tile): string {
@@ -110,4 +113,16 @@ export function isPair(block: Tile[]): boolean {
   }
   const [a, b] = block
   return a === b
+}
+
+const kindValues: Record<string, number> = {
+  m: 10,
+  p: 20,
+  s: 30,
+  w: 40,
+}
+
+export function sortTiles(tiles: Tile[]): Tile[] {
+  const tileValue = (tile: Tile) => (kindValues[getKind(tile)] || 0) + getNumber(tile)
+  return tiles.slice().sort((a, b) => tileValue(a) - tileValue(b))
 }

@@ -1,9 +1,10 @@
-import { Tile, canFormSet, isSet } from "./Tile"
+import { Tile, canFormSet, isSet, sortTiles } from "./Tile"
 
 export type Block = Tile[]
 export type Hand = Block[]
 
 export function potentialHands(tiles: Tile[]): Hand[] {
+  tiles = sortTiles(tiles)
   return findHands(toLinked(tiles))
 }
 
